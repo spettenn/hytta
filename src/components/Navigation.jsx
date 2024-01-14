@@ -1,12 +1,14 @@
-// Navigation.js
-import React, { useContext } from 'react';
-import { ThemeContext } from './theme/ThemeContext';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import { ThemeProvider, ThemeContext } from './theme/ThemeContext';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Logo from '../assets/logo.png';
+import LoginForm from './auth/LoginForm';
 
 const NavItem = styled.div`
-	// Add styles for navigation items
+	&:hover {
+		background-color: #ccc;
+	}
 `;
 
 const Div = styled.div`
@@ -22,8 +24,14 @@ const Button = styled.button`
 	cursor: pointer;
 `;
 
+const LoginButton = styled.button`
+	// Style your login button
+`;
+
 const Navigation = ({ isLoggedIn }) => {
 	const { currentTheme, toggleTheme } = useContext(ThemeContext);
+	const [showLoginForm, setShowLoginForm] = useState(false);
+	const loginFormRef = useRef(null);
 
 	const NavigationBar = styled.nav`
 		background-color: ${currentTheme.background};
@@ -39,25 +47,54 @@ const Navigation = ({ isLoggedIn }) => {
 		}
 	`;
 
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (
+				loginFormRef.current &&
+				!loginFormRef.current.contains(event.target)
+			) {
+				setShowLoginForm(false);
+			}
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside);
+		};
+	}, [loginFormRef]);
+
 	return (
-		<NavigationBar>
-			<img src={Logo} alt='logo' />
-			<Div>
-				{isLoggedIn ? (
-					<>
-						<Button onClick={toggleTheme}>Toggle Theme</Button>
-						<NavItem>Logout</NavItem>
-						<Link to='/dashboard'>Dashboard</Link>
-						<NavItem>News</NavItem>
-					</>
-				) : (
-					<>
-						<NavItem onClick={toggleTheme}>Toggle Theme</NavItem>
-						<NavItem>Login</NavItem>
-					</>
-				)}
-			</Div>
-		</NavigationBar>
+		<ThemeProvider theme={currentTheme}>
+			<NavigationBar>
+				<Link to='/'>
+					<img src={Logo} alt='logo' />
+				</Link>
+
+				<Div>
+					{isLoggedIn ? (
+						<>
+							<Button onClick={toggleTheme}>Toggle Theme</Button>
+							<NavItem>Logout</NavItem>
+							<Link to='/dashboard'>Dashboard</Link>
+							<NavItem>News</NavItem>
+						</>
+					) : (
+						<>
+							<NavItem onClick={toggleTheme}>Toggle Theme</NavItem>
+							{!isLoggedIn && (
+								<>
+									<LoginButton onClick={() => setShowLoginForm(!showLoginForm)}>
+										Login
+									</LoginButton>
+									{showLoginForm && <LoginForm />}
+								</>
+							)}
+							{showLoginForm && <LoginForm />}
+						</>
+					)}
+				</Div>
+			</NavigationBar>
+		</ThemeProvider>
 	);
 };
 

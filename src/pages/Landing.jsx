@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { ThemeContext, ThemeProvider } from '../components/theme/ThemeContext';
 
 const Outer = styled.section`
 	height: 100vh;
@@ -7,10 +8,18 @@ const Outer = styled.section`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	background-color: ${(props) => props.theme.background};
+	color: ${(props) => props.theme.text};
 `;
 
 function Landing() {
-	return <Outer>Landing</Outer>;
+	const { theme } = useContext(ThemeContext);
+
+	return (
+		<ThemeProvider theme={theme}>
+			<Outer>hello world</Outer>
+		</ThemeProvider>
+	);
 }
 
 export default Landing;
