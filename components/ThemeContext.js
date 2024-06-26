@@ -18,7 +18,10 @@ export default function ThemeToggleProvider({ children }) {
 				palette: {
 					mode,
 					primary: {
-						main: '#1976d2',
+						main: '#254336',
+					},
+					background: {
+						default: mode === 'light' ? '#dad3be' : '#373A40',
 					},
 					secondary: {
 						main: '#dc004e',
