@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { Container, Typography, Grid } from '@mui/material';
 import Booking from '../../../components/Booking';
 import Todo from '../../../components/Todo';
+import LoadingSpinner from '../../../components/LoadingSpinner';
 
 const cabins = {
 	winter: 'Winter Cabin',
@@ -18,9 +19,7 @@ export default function CabinDashboard() {
 	if (!cabin || !cabins[cabin]) {
 		return (
 			<Container>
-				<Typography variant='h4' gutterBottom>
-					Cabin not found
-				</Typography>
+				<LoadingSpinner />
 			</Container>
 		);
 	}
